@@ -7,29 +7,22 @@ export async function onRequestPost({ env }) {
   const r = await criarTransacao(env);
   if (!r.ok || !r.body) {
     console.log("BravoPay recusou", r.status, JSON.stringify(r.body));
-    return json({ error: "Falha ao criar cobrança", bravopay_status: r.status, detalhe_texto: JSON.stringify(r.body).slice(0, 1500) }, 502);
+    return json({ error: "Falha ao criar cobrança", bravopay_status: r.status, detalhe: r.body }, 502);
   }
 
   const id = extrairId(r.body);
   let copyPaste = extrairPix(r.body);
 
-  // 202 = aceito, ainda processando: consulta a transação até o código PIX aparecer (~14s)
-  let ultima = null;
-  for (let i = 0; id && !copyPaste && i < 7; i++) {
-    await esperar(2000);
+  // se a cobrança foi criada mas o código ainda não veio, consulta de novo (até 3x)
+  for (let i = 0; id && !copyPaste && i < 3; i++) {
+    await esperar(1500);
     const g = await buscarTransacao(env, id);
-    ultima = { status: g.status, corpo: JSON.stringify(g.body).slice(0, 800) };
     if (g.ok) copyPaste = extrairPix(g.body);
   }
 
   if (!id || !copyPaste) {
-    console.log("Resposta inesperada", JSON.stringify(r.body), JSON.stringify(ultima));
-    return json({
-      error: "Resposta inesperada da BravoPay",
-      bravopay_status: r.status,
-      detalhe_texto: JSON.stringify(r.body).slice(0, 1500),
-      ultima_consulta: ultima,
-    }, 502);
+    console.log("Resposta inesperada", JSON.stringify(r.body));
+    return json({ error: "Resposta inesperada da BravoPay", bravopay_status: r.status, detalhe: r.body }, 502);
   }
   return json({ id, copy_paste: copyPaste });
 }
