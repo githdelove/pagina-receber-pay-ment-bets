@@ -1,8 +1,8 @@
-import { json, criarTransacao } from "../_lib.js";
+import { json, criarTransacao, getChave } from "../_lib.js";
 
-// POST /api/create  -> cria a cobrança PIX de R$ 15,00
+// POST /api/create  -> cria a cobrança PIX (valor em VALOR_CENTAVOS, no _lib.js)
 export async function onRequestPost({ env }) {
-  if (!env.BRAVOPAY_KEY) return json({ error: "BRAVOPAY_KEY não configurada" }, 500);
+  if (!getChave(env)) return json({ error: "Chave da BravoPay não configurada" }, 500);
 
   const r = await criarTransacao(env);
   if (!r.ok || !r.body) {

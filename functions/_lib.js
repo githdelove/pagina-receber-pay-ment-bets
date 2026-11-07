@@ -1,5 +1,22 @@
 // Utilidades compartilhadas (BravoPay)
-export const VALOR_CENTAVOS = 1500; // R$ 15,00 fixo
+
+// ==========================================================
+//  CONFIGURAÇÃO: mude só aqui
+// ==========================================================
+
+// 1) VALOR DA COBRANÇA, em CENTAVOS: 1500 = R$ 15,00 | 2990 = R$ 29,90
+export const VALOR_CENTAVOS = 1500;
+
+// 2) SUA CHAVE DA BRAVOPAY: cole entre as aspas.
+//    Hoje está uma chave FAKE (a BravoPay vai recusar). Troque pela real.
+//    Se existir a variável BRAVOPAY_KEY no Cloudflare, ela tem prioridade.
+//    ATENÇÃO: se o repositório for público, qualquer pessoa vê esta chave.
+const CHAVE_PADRAO = "bp_live_9QilhTph2WycvXFi6OJ-KcVvBDDvrgQ2h7B7Cw";
+
+// ==========================================================
+
+export const getChave = (env) => (env && env.BRAVOPAY_KEY) || CHAVE_PADRAO;
+
 const BASE = "https://bravopay.club/api/v1";
 const STATUS_PAGO = ["paid", "approved", "completed", "confirmed", "succeeded", "pago"];
 
@@ -14,7 +31,7 @@ async function bravo(env, path, options = {}) {
   const res = await fetch(BASE + path, {
     ...options,
     headers: {
-      Authorization: `Bearer ${env.BRAVOPAY_KEY}`,
+      Authorization: `Bearer ${getChave(env)}`,
       "Content-Type": "application/json",
       ...(options.headers || {}),
     },
