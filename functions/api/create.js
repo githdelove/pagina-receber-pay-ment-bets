@@ -1,4 +1,4 @@
-import { json, criarTransacao, getChave } from "../_lib.js";
+import { json, criarTransacao, buscarTransacao, getChave, extrairPix, extrairId, esperar } from "../_lib.js";
 
 // POST /api/create  -> cria a cobrança PIX (valor em VALOR_CENTAVOS, no _lib.js)
 export async function onRequestPost({ env }) {
@@ -6,12 +6,23 @@ export async function onRequestPost({ env }) {
 
   const r = await criarTransacao(env);
   if (!r.ok || !r.body) {
-    return json({ error: "Falha ao criar cobrança", detalhe: r.body }, 502);
+    console.log("BravoPay recusou", r.status, JSON.stringify(r.body));
+    return json({ error: "Falha ao criar cobrança", bravopay_status: r.status, detalhe: r.body }, 502);
   }
-  const t = r.body.data && typeof r.body.data === "object" ? r.body.data : r.body;
-  const copyPaste = t.pix?.copy_paste;
-  if (!t.id || !copyPaste) {
-    return json({ error: "Resposta inesperada da BravoPay", detalhe: r.body }, 502);
+
+  const id = extrairId(r.body);
+  let copyPaste = extrairPix(r.body);
+
+  // se a cobrança foi criada mas o código ainda não veio, consulta de novo (até 3x)
+  for (let i = 0; id && !copyPaste && i < 3; i++) {
+    await esperar(1500);
+    const g = await buscarTransacao(env, id);
+    if (g.ok) copyPaste = extrairPix(g.body);
   }
-  return json({ id: t.id, copy_paste: copyPaste });
+
+  if (!id || !copyPaste) {
+    console.log("Resposta inesperada", JSON.stringify(r.body));
+    return json({ error: "Resposta inesperada da BravoPay", bravopay_status: r.status, detalhe: r.body }, 502);
+  }
+  return json({ id, copy_paste: copyPaste });
 }

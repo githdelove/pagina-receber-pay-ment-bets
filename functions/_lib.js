@@ -28,17 +28,29 @@ export function json(data, status = 200) {
 }
 
 async function bravo(env, path, options = {}) {
-  const res = await fetch(BASE + path, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${getChave(env)}`,
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-  });
-  let body = null;
-  try { body = await res.json(); } catch {}
-  return { ok: res.ok, status: res.status, body };
+  // se a BravoPay demorar mais que 25s, desiste e devolve erro claro
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 25000);
+  try {
+    const res = await fetch(BASE + path, {
+      ...options,
+      signal: ctrl.signal,
+      headers: {
+        Authorization: `Bearer ${getChave(env)}`,
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      },
+    });
+    const texto = await res.text();
+    let body = null;
+    try { body = JSON.parse(texto); } catch { body = texto ? { resposta_bruta: texto.slice(0, 300) } : null; }
+    return { ok: res.ok, status: res.status, body };
+  } catch (e) {
+    const timeout = e && e.name === "AbortError";
+    return { ok: false, status: timeout ? 504 : 0, body: { error: timeout ? "BravoPay demorou demais (timeout)" : String(e) } };
+  } finally {
+    clearTimeout(t);
+  }
 }
 
 export const criarTransacao = (env) =>
@@ -65,3 +77,38 @@ export function estaPago(tx) {
 export function idValido(id) {
   return typeof id === "string" && /^[A-Za-z0-9_\-]{6,100}$/.test(id);
 }
+
+// ---- Extração tolerante da resposta da BravoPay ----
+
+// Procura em qualquer campo da resposta um texto que seja um PIX copia e cola
+// (todo código PIX começa com "000201").
+export function extrairPix(body) {
+  const visto = new Set();
+  const achar = (v, prof = 0) => {
+    if (prof > 6 || v == null) return null;
+    if (typeof v === "string") {
+      const t = v.trim();
+      return /^000201/.test(t) && t.length > 50 ? t : null;
+    }
+    if (typeof v === "object") {
+      if (visto.has(v)) return null;
+      visto.add(v);
+      for (const k of Object.keys(v)) {
+        const r = achar(v[k], prof + 1);
+        if (r) return r;
+      }
+    }
+    return null;
+  };
+  return achar(body);
+}
+
+export function extrairId(body) {
+  if (!body || typeof body !== "object") return null;
+  const t = body.data && typeof body.data === "object" ? body.data : body;
+  const id = t.id ?? t.transaction_id ?? t.uuid ?? t.reference ?? body.id ?? body.transaction_id;
+  return id == null ? null : String(id);
+}
+
+export const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
+

