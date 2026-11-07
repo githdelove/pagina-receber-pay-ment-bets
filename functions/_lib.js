@@ -12,7 +12,7 @@ export const VALOR_CENTAVOS = 1500;
 //    Se existir a variável BRAVOPAY_KEY no Cloudflare, ela tem prioridade.
 //    ATENÇÃO: se o repositório for público, qualquer pessoa vê esta chave.
 const CHAVE_PADRAO = "bp_live_9QilhTph2WycvXFi6OJ-KcVvBDDvrgQ2h7B7Cw";
-
+ 
 // ==========================================================
 
 export const getChave = (env) => (env && env.BRAVOPAY_KEY) || CHAVE_PADRAO;
@@ -111,4 +111,3 @@ export function extrairId(body) {
 }
 
 export const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
-

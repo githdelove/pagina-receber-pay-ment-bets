@@ -3,12 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>gov.br | Emissão de relatório completo</title>
+<title>79ppl | Emissão de relatório completo</title>
 <meta name="description" content="Emita o seu relatório completo de forma rápida e segura. Pagamento por PIX com liberação automática.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
-
 <style>
   :root{
     --bg:#f8f8f8; --card:#ffffff; --ink:#333333; --mute:#575757; --line:#d9d9d9;
@@ -42,7 +41,7 @@
   .hero h1{font-size:clamp(1.9rem,4.4vw,2.9rem);margin-bottom:16px}
   .hero p.lead{font-size:1.1rem;opacity:.9;max-width:56ch}
   .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
-  .btn{display:inline-block;padding:20px 47px;border:0;border-radius:999px;background:var(--brand);color:var(--brand-ink);font:inherit;font-weight:700;text-decoration:none;cursor:pointer;transition:background .15s}
+  .btn{display:inline-block;padding:15px 34px;border:0;border-radius:999px;background:var(--brand);color:var(--brand-ink);font:inherit;font-weight:700;text-decoration:none;cursor:pointer;transition:background .15s}
   .btn:hover{background:var(--brand-dk)}
   .btn:disabled{opacity:.6;cursor:default}
   .btn.ghost{background:transparent;color:var(--hero-ink);border:1px solid rgba(255,255,255,.35)}
@@ -134,7 +133,7 @@
 
 <header class="top">
   <div class="wrap">
-    <div class="logo">gov.br</div>
+    <div class="logo">79ppl</div>
     <nav aria-label="Seções">
       <a href="#incluso">O que está incluso</a>
       <a href="#como">Como funciona</a>
@@ -145,30 +144,29 @@
 </header>
 
 <main>
-<section class="blk" id="relatorio" hidden>
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Seu relatório completo</h2>
-      <p>Pagamento confirmado. Abaixo está a lista completa de fornecedores e valores. Este conteúdo é confidencial e de uso pessoal.</p>
+  <section class="blk" id="relatorio" hidden>
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Seu relatório completo</h2>
+        <p>Pagamento confirmado. Abaixo está a lista completa de fornecedores e valores. Este conteúdo é confidencial e de uso pessoal.</p>
+      </div>
+      <input class="busca" id="busca" type="search" placeholder="Buscar fornecedor" aria-label="Buscar fornecedor">
+      <div class="tabela">
+        <table>
+          <thead><tr><th>Fornecedor</th><th>Valor</th></tr></thead>
+          <tbody id="linhas"></tbody>
+        </table>
+        <div class="vazio" id="vazio" hidden>Nenhum fornecedor encontrado.</div>
+      </div>
     </div>
-    <input class="busca" id="busca" type="search" placeholder="Buscar fornecedor" aria-label="Buscar fornecedor">
-    <div class="tabela">
-      <table>
-        <thead><tr><th>Fornecedor</th><th>Valor</th></tr></thead>
-        <tbody id="linhas"></tbody>
-      </table>
-      <div class="vazio" id="vazio" hidden>Nenhum fornecedor encontrado.</div>
-    </div>
-  </div>
-</section>
-
+  </section>
   <section class="hero">
     <div class="wrap grid">
       <div>
-        <h1>Consultar Valores de Casas de Apostas a Receber</h1>
-        <p class="lead">Voce consulta e ja pode receber ate R$500 reais, para consulta completa é necessário pagar uma taxa única de emissão. O pagamento é feito por PIX, a confirmação é automática e o acesso é liberado assim que o banco processa a transação.</p>
+        <h1>Emita o seu relatório completo em poucos minutos</h1>
+        <p class="lead">Para liberar o relatório completo, é necessário pagar uma taxa única de emissão. O pagamento é feito por PIX, a confirmação é automática e o acesso é liberado assim que o banco processa a transação.</p>
         <div class="cta-row">
-          <button class="btn" data-abrir>Consultar Valores</button>
+          <button class="btn" data-abrir>Pagar taxa de emissão</button>
           <a class="btn ghost" href="#taxa">Entender a taxa</a>
         </div>
       </div>
@@ -265,15 +263,15 @@
     <div class="wrap">
       <h2>Pronto para emitir o seu relatório?</h2>
       <p>Pague a taxa de emissão por PIX e tenha acesso ao relatório completo logo em seguida.</p>
-      <button class="btn" data-abrir>Consultar Valores</button>
+      <button class="btn" data-abrir>Pagar taxa de emissão</button>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <p><strong>gov.br</strong><br>Razão social: 121.484.448.15 &middot; CNPJ: 111.515.147.899.646.45 <br>Suporte: gov.emial@mail.com</p>
-    <p>A gov.br é uma empresa privada e não possui vínculo com órgãos ou serviços do governo. Pagamentos processados via PIX por provedor de pagamentos parceiro.</p>
+    <p><strong>79ppl</strong><br>Razão social: [PREENCHER] &middot; CNPJ: [PREENCHER]<br>Suporte: [PREENCHER E-MAIL OU WHATSAPP]</p>
+    <p>A 79ppl é uma empresa privada e não possui vínculo com órgãos ou serviços do governo. Pagamentos processados via PIX por provedor de pagamentos parceiro.</p>
   </div>
 </footer>
 
@@ -384,6 +382,10 @@ $("ver").onclick = () => { dlg.close(); $("relatorio").scrollIntoView({behavior:
 function abrir(){
   let salvo = null;
   try { salvo = JSON.parse(localStorage.getItem(CHAVE) || "null"); } catch {}
+  // descarta cobrança sem código ou com mais de 50 min (o PIX expira em 1h)
+  if (salvo && (!salvo.code || Date.now() - (salvo.ts || 0) > 50 * 60 * 1000)) {
+    localStorage.removeItem(CHAVE); salvo = null;
+  }
   if (salvo?.id) {
     $("codigo").value = salvo.code; desenharQR(salvo.code); passo(2); acompanhar(salvo.id);
   } else { passo(1); $("erro").hidden = true; }
@@ -394,21 +396,38 @@ document.querySelectorAll("[data-abrir]").forEach(b => b.onclick = abrir);
 $("fechar").onclick = () => dlg.close();
 dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
 
+// a BravoPay leva de 5 a 30s para gerar o código: consultamos até ficar pronto (máx. ~80s)
+async function aguardarPix(id){
+  for (let i = 0; i < 40; i++) {
+    const r = await fetch("/api/pix?id=" + encodeURIComponent(id));
+    if (r.ok) {
+      const d = await r.json();
+      if (d.copy_paste) return d.copy_paste;
+      if (d.expired) throw new Error("expirou");
+    }
+    await new Promise((res) => setTimeout(res, 2000));
+  }
+  throw new Error("demorou");
+}
+
 $("gerar").onclick = async () => {
-  $("gerar").disabled = true; $("erro").hidden = true;
+  const btn = $("gerar"), rotulo = btn.textContent;
+  btn.disabled = true; $("erro").hidden = true;
+  btn.textContent = "Gerando seu PIX… (pode levar até 30s)";
   try {
     const r = await fetch("/api/create", { method: "POST" });
     const d = await r.json();
     if (!r.ok) { console.error("Erro ao gerar PIX:", r.status, d); throw new Error("http " + r.status); }
-    localStorage.setItem(CHAVE, JSON.stringify({ id: d.id, code: d.copy_paste }));
-    $("codigo").value = d.copy_paste;
-    desenharQR(d.copy_paste);
+    const code = d.copy_paste || await aguardarPix(d.id);
+    localStorage.setItem(CHAVE, JSON.stringify({ id: d.id, code, ts: Date.now() }));
+    $("codigo").value = code;
+    desenharQR(code);
     passo(2);
     acompanhar(d.id);
   } catch (e) {
     $("erro").textContent = "Não foi possível gerar o PIX agora. Tente novamente em instantes." + (e && e.message ? " (" + e.message + ")" : "");
     $("erro").hidden = false;
-  } finally { $("gerar").disabled = false; }
+  } finally { btn.disabled = false; btn.textContent = rotulo; }
 };
 
 $("copiar").onclick = async () => {
@@ -418,7 +437,7 @@ $("copiar").onclick = async () => {
   setTimeout(() => $("copiar").textContent = "Copiar código PIX", 2000);
 };
 
-// se houver cobrança pendente salva, continua verificando em segundo plano
+// quem já pagou continua com acesso ao recarregar; senão retoma cobrança pendente
 try {
   const pago = localStorage.getItem(PAGO);
   if (pago) carregarLista(pago);

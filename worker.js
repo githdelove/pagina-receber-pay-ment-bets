@@ -2,12 +2,14 @@
 // Direciona /api/* para as funções da pasta functions/ e serve o site (public/).
 import * as create from "./functions/api/create.js";
 import * as status from "./functions/api/status.js";
+import * as pix from "./functions/api/pix.js";
 import * as report from "./functions/api/report.js";
 import * as webhook from "./functions/api/webhook.js";
 
 const ROTAS = {
   "/api/create":  { POST: create.onRequestPost },
   "/api/status":  { GET: status.onRequestGet },
+  "/api/pix":     { GET: pix.onRequestGet },
   "/api/report":  { GET: report.onRequestGet },
   "/api/webhook": { POST: webhook.onRequestPost },
 };

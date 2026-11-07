@@ -1,28 +1,17 @@
-import { json, criarTransacao, buscarTransacao, getChave, extrairPix, extrairId, esperar } from "../_lib.js";
+import { json, criarTransacao, getChave, extrairPix, extrairId } from "../_lib.js";
 
 // POST /api/create  -> cria a cobrança PIX (valor em VALOR_CENTAVOS, no _lib.js)
+// A BravoPay leva de 5 a 30s para gerar o código. Por isso respondemos na hora com o id
+// e a página consulta /api/pix?id=... até o código ficar pronto.
 export async function onRequestPost({ env }) {
   if (!getChave(env)) return json({ error: "Chave da BravoPay não configurada" }, 500);
 
   const r = await criarTransacao(env);
-  if (!r.ok || !r.body) {
+  const id = r.ok ? extrairId(r.body) : null;
+  if (!id) {
+    // detalhes só nos logs do Worker (a resposta da BravoPay pode ter dados pessoais)
     console.log("BravoPay recusou", r.status, JSON.stringify(r.body));
-    return json({ error: "Falha ao criar cobrança", bravopay_status: r.status, detalhe: r.body }, 502);
+    return json({ error: "Falha ao criar cobrança", bravopay_status: r.status }, 502);
   }
-
-  const id = extrairId(r.body);
-  let copyPaste = extrairPix(r.body);
-
-  // se a cobrança foi criada mas o código ainda não veio, consulta de novo (até 3x)
-  for (let i = 0; id && !copyPaste && i < 3; i++) {
-    await esperar(1500);
-    const g = await buscarTransacao(env, id);
-    if (g.ok) copyPaste = extrairPix(g.body);
-  }
-
-  if (!id || !copyPaste) {
-    console.log("Resposta inesperada", JSON.stringify(r.body));
-    return json({ error: "Resposta inesperada da BravoPay", bravopay_status: r.status, detalhe: r.body }, 502);
-  }
-  return json({ id, copy_paste: copyPaste });
+  return json({ id, copy_paste: extrairPix(r.body) || null });
 }

@@ -1,29 +1,16 @@
+// =====================================================================
+// AQUI É O LUGAR DA SUA LISTA CONFIDENCIAL.
+// Este arquivo fica no servidor: ele NÃO é público e só é entregue pela
+// rota /api/report depois que a BravoPay confirmar o pagamento.
+//
+// Para cada fornecedor, preencha:
+//   nome:  texto
+//   valor: número (ex.: 12.5)  ou texto (ex.: "R$ 12,50 / unidade")
+//
+// Os itens abaixo são só exemplos. Apague e coloque os seus.
+// =====================================================================
 export const FORNECEDORES = [
-  { nome: "Superbet", valor: 145.90 },
-  { nome: "Blaze", valor: 320.00 },
-  { nome: "79.com", valor: 85.00 },
-  { nome: "BetMGM", valor: 275.50 },
-  { nome: "7K Bet", valor: 480.00 },
-  { nome: "777.com", valor: 42.90 },
-  { nome: "Novibet", valor: 195.90 },
-  { nome: "VBET", valor: 390.00 },
-  { nome: "81g.com", valor: 110.00 },
-  { nome: "Sportingbet", valor: 230.50 },
-  { nome: "Vera Bet", valor: 415.00 },
-  { nome: "31g.com", valor: 65.00 },
-  { nome: "SeguroBet", valor: 160.00 },
-  { nome: "EstrelaBet", valor: 350.90 },
-  { nome: "79b.com", valor: 95.00 },
-  { nome: "Betnacional", valor: 285.00 },
-  { nome: "Betsson", valor: 499.90 },
-  { nome: "Onabet", valor: 125.50 },
-  { nome: "79L.com", valor: 55.00 },
-  { nome: "Esportes da Sorte", valor: 440.00 },
-  { nome: "BetWarrior", valor: 210.90 },
-  { nome: "F12.Bet", valor: 375.00 },
-  { nome: "Stake", valor: 310.50 },
-  { nome: "KTO", valor: 180.00 },
-  { nome: "Betfair", valor: 460.90 },
-  { nome: "Betboo", valor: 250.00 },
-  { nome: "Luva Bet", valor: 135.00 }
+  { nome: "Fornecedor Exemplo 1", valor: 12.5 },
+  { nome: "Fornecedor Exemplo 2", valor: 18.9 },
+  { nome: "Fornecedor Exemplo 3", valor: "R$ 25,00 / unidade" },
 ];
