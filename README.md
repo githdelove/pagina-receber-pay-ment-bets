@@ -1,36 +1,37 @@
 # PIX R$ 15 – relatório completo (BravoPay)
 
-Cloudflare Pages + Functions. Sem dependências, sem build.
+Cloudflare Workers ou Pages Functions. Sem dependências de build.
 
-## Publicar como Worker (o que está configurado)
-O arquivo `worker.js` + `wrangler.jsonc` fazem o projeto funcionar como Worker
-(endereço workers.dev): serve `public/` e responde as rotas /api/*.
-O nome em `wrangler.jsonc` precisa ser igual ao nome do Worker no Cloudflare.
+## Configuração obrigatória da BravoPay
 
-## Publicar como Pages (alternativa)
-1. Suba esta pasta num repositório GitHub e conecte no Cloudflare Pages
-   (build command: vazio · output directory: `public`).
-   Ou: `npx wrangler pages deploy public --project-name pix-relatorio`
-2. Em Settings > Variables and Secrets, crie:
-   - `BRAVOPAY_KEY`   (secret) sua chave da BravoPay
-   - `WEBHOOK_SECRET` um texto aleatório qualquer (opcional, recomendado)
-3. No painel da BravoPay, cadastre o webhook:
-   `https://SEU-SITE.pages.dev/api/webhook?secret=SEU_WEBHOOK_SECRET`
+A chave não fica mais embutida no código. Configure-a como Secret no painel do Cloudflare:
 
-## Onde colocar a chave e mudar o valor
-Tudo em `functions/_lib.js`, no topo:
-- `VALOR_CENTAVOS`  valor da cobrança em centavos (1500 = R$ 15,00)
-- `CHAVE_PADRAO`    sua chave da BravoPay (hoje é uma chave FAKE)
-Se existir a variável `BRAVOPAY_KEY` no Cloudflare, ela tem prioridade sobre
-a chave do código. Com repositório público, prefira só a variável do Cloudflare.
+- **Worker:** Settings → Variables and Secrets → Add → Secret; nome `BRAVOPAY_KEY`, valor sua chave real.
+- **Pages:** Settings → Variables and Secrets → Add variable → Encrypt; nome `BRAVOPAY_KEY`, valor sua chave real.
+
+Depois de salvar, faça novo deploy. Sem essa configuração, a criação da cobrança responde com erro de configuração (503). Não compartilhe nem publique a chave.
+
+## Publicar como Worker
+
+O arquivo `worker.js` + `wrangler.jsonc` fazem o projeto funcionar como Worker (endereço workers.dev). O nome em `wrangler.jsonc` precisa ser igual ao nome do Worker no Cloudflare. Configure também `BRAVOPAY_KEY` conforme as instruções acima.
+
+## Publicar como Pages
+
+1. Suba esta pasta num repositório GitHub e conecte no Cloudflare Pages (output directory: `public`). Ou use `npx wrangler pages deploy public --project-name pix-relatorio`.
+2. Configure `BRAVOPAY_KEY` em Settings → Variables and Secrets.
+3. Opcional: configure `WEBHOOK_SECRET` e cadastre no painel BravoPay `https://SEU-SITE.pages.dev/api/webhook?secret=SEU_WEBHOOK_SECRET`.
+
+## Valor e dados do relatório
+
+- `functions/_lib.js`: `VALOR_CENTAVOS` (1500 = R$ 15,00).
+- `functions/_dados/fornecedores.js`: lista privada de fornecedores e valores.
+
+Não coloque a lista privada em `public/` nem em repositório público.
 
 ## Rotas
-- POST /api/create   cria a cobrança de R$ 15,00 (valor fixo no servidor)
-- GET  /api/status   confirma o pagamento direto na BravoPay
-- POST /api/webhook  recebe aviso da BravoPay e reconfirma via GET
-- GET  /api/report   devolve a lista de fornecedores só se o pagamento estiver confirmado
 
-## Sua lista
-Edite `functions/_dados/fornecedores.js` (nome e valor de cada fornecedor).
-Não coloque a lista em `public/` nem no index.html. Use repositório PRIVADO
-ou publique com `wrangler pages deploy`, para a lista não ficar visível.
+- `POST /api/create`: cria cobrança Pix.
+- `GET /api/pix?id=...`: aguarda/consulta o código Pix da cobrança.
+- `GET /api/status?id=...`: confirma pagamento consultando a BravoPay.
+- `POST /api/webhook`: recebe aviso e reconfirma via GET.
+- `GET /api/report?id=...`: devolve a lista somente após confirmação.

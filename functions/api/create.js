@@ -1,17 +1,18 @@
 import { json, criarTransacao, getChave, extrairPix, extrairId } from "../_lib.js";
 
-// POST /api/create  -> cria a cobrança PIX (valor em VALOR_CENTAVOS, no _lib.js)
-// A BravoPay leva de 5 a 30s para gerar o código. Por isso respondemos na hora com o id
-// e a página consulta /api/pix?id=... até o código ficar pronto.
+// POST /api/create -> cria a cobrança PIX e retorna o payload, quando já disponível.
 export async function onRequestPost({ env }) {
-  if (!getChave(env)) return json({ error: "Chave da BravoPay não configurada" }, 500);
+  if (!getChave(env)) return json({ error: "Pagamento temporariamente indisponível. Configure a chave BRAVOPAY_KEY no Cloudflare." }, 503);
 
   const r = await criarTransacao(env);
   const id = r.ok ? extrairId(r.body) : null;
   if (!id) {
-    // detalhes só nos logs do Worker (a resposta da BravoPay pode ter dados pessoais)
-    console.log("BravoPay recusou", r.status, JSON.stringify(r.body));
-    return json({ error: "Falha ao criar cobrança", bravopay_status: r.status }, 502);
+    // Não devolva corpo bruto do provedor nem dados potencialmente sensíveis ao navegador.
+    console.error("BravoPay create falhou", { status: r.status, error: r.body?.error || null });
+    const status = r.status === 504 ? 504 : r.status === 503 ? 503 : 502;
+    return json({ error: r.status === 504
+      ? "A BravoPay está demorando para responder. Tente novamente."
+      : "Não foi possível iniciar o pagamento. Confira a configuração da integração e tente novamente." }, status);
   }
   return json({ id, copy_paste: extrairPix(r.body) || null });
 }

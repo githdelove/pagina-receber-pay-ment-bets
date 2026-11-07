@@ -9,441 +9,50 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#f8f8f8; --card:#ffffff; --ink:#333333; --mute:#575757; --line:#d9d9d9;
-    --title:#071d41; --link:#1351b4;
-    --brand:#168821; --brand-dk:#0f6a19; --brand-ink:#ffffff; --soft:#ededed;
-    --warn:#fff6e0; --warn-ink:#6b4b00; --err:#a4262c;
-    --hero:#071d41; --hero-ink:#ffffff;
-  }
-  
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
-  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Rawline","Open Sans",system-ui,"Segoe UI",Roboto,sans-serif}
-  h1,h2,h3{font-family:"Raleway","Open Sans",system-ui,sans-serif;font-weight:700;line-height:1.2;margin:0}
-  section.blk h2,section.blk h3,.dlg h2{color:var(--title)}
-  p{margin:0 0 14px}
-  a{color:var(--link)}
-  :focus-visible{outline:3px solid var(--link);outline-offset:3px}
-  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-
-  header.top{background:var(--hero);color:var(--hero-ink)}
-  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
-  .logo{font-family:"Raleway",sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:.3px}
-  header.top nav a{color:var(--hero-ink);text-decoration:none;margin-left:22px;font-size:.92rem;opacity:.85}
-  header.top nav a:hover{opacity:1;text-decoration:underline}
-  @media (max-width:640px){header.top nav{display:none}}
-
-  .hero{background:var(--hero);color:var(--hero-ink);padding:56px 0 72px}
-  .hero .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}
-  @media (max-width:820px){.hero .grid{grid-template-columns:1fr}}
-  .hero h1{font-size:clamp(1.9rem,4.4vw,2.9rem);margin-bottom:16px}
-  .hero p.lead{font-size:1.1rem;opacity:.9;max-width:56ch}
-  .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
-  .btn{display:inline-block;padding:15px 34px;border:0;border-radius:999px;background:var(--brand);color:var(--brand-ink);font:inherit;font-weight:700;text-decoration:none;cursor:pointer;transition:background .15s}
-  .btn:hover{background:var(--brand-dk)}
-  .btn:disabled{opacity:.6;cursor:default}
-  .btn.ghost{background:transparent;color:var(--hero-ink);border:1px solid rgba(255,255,255,.35)}
-  .btn.ghost:hover{background:rgba(255,255,255,.08)}
-  .btn.block{display:block;width:100%;text-align:center}
-  .btn.line{background:transparent;color:var(--link);border:2px solid var(--link)}
-  .btn.line:hover{background:#eef3fb}
-  .hero-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:24px}
-  .hero-card h3{font-size:1.05rem;margin-bottom:12px}
-  .hero-card ul{list-style:none;margin:0;padding:0}
-  .hero-card li{padding:9px 0 9px 26px;position:relative;border-top:1px solid rgba(255,255,255,.12);font-size:.95rem}
-  .hero-card li:first-child{border-top:0}
-  .hero-card li::before{content:"";position:absolute;left:2px;top:17px;width:10px;height:6px;border-left:2px solid #5fd06b;border-bottom:2px solid #5fd06b;transform:rotate(-45deg)}
-
-  section.blk{padding:64px 0}
-  section.blk.alt{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-  .sec-head{max-width:62ch;margin-bottom:32px}
-  .sec-head h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:10px}
-  .sec-head p{color:var(--mute)}
-
-  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-  @media (max-width:820px){.cards{grid-template-columns:1fr}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
-  section.alt .card{background:var(--bg)}
-  .card h3{font-size:1.1rem;margin-bottom:8px}
-  .card p{color:var(--mute);margin:0;font-size:.97rem}
-
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:s;list-style:none;margin:0;padding:0}
-  @media (max-width:900px){.steps{grid-template-columns:1fr 1fr}}
-  @media (max-width:560px){.steps{grid-template-columns:1fr}}
-  .steps li{counter-increment:s;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:22px}
-  .steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--link);color:var(--brand-ink);font-weight:700;margin-bottom:12px}
-  .steps h3{font-size:1.05rem;margin-bottom:6px}
-  .steps p{margin:0;color:var(--mute);font-size:.95rem}
-
-  .why{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:start}
-  @media (max-width:820px){.why{grid-template-columns:1fr}}
-  .why h3{font-size:1.15rem;margin:22px 0 8px}
-  .why h3:first-child{margin-top:0}
-  .notice{background:var(--warn);color:var(--warn-ink);border-radius:12px;padding:20px 22px;font-size:.96rem}
-  .notice strong{display:block;margin-bottom:6px;font-size:1rem}
-
-  details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
-  details summary{cursor:pointer;padding:16px 20px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px}
-  details summary::-webkit-details-marker{display:none}
-  details summary::after{content:"+";font-size:1.3rem;line-height:1;color:var(--link)}
-  details[open] summary::after{content:"–"}
-  details .ans{padding:0 20px 18px;color:var(--mute)}
-
-  .final{background:var(--hero);color:var(--hero-ink);text-align:center;padding:60px 0}
-  .final h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:12px}
-  .final p{max-width:56ch;margin:0 auto 24px;opacity:.9}
-
-  footer{padding:34px 0;color:var(--mute);font-size:.88rem;text-align:center;border-top:1px solid var(--line)}
-  footer p{max-width:70ch;margin:0 auto 12px}
-
-  /* Janela de pagamento */
-  dialog{border:0;border-radius:16px;padding:0;width:min(440px,calc(100% - 24px));background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
-  dialog::backdrop{background:rgba(8,14,17,.62)}
-  .dlg{padding:26px}
-  .dlg h2{font-size:1.3rem;margin-bottom:6px}
-  .dlg .sub{color:var(--mute);font-size:.95rem;margin-bottom:18px}
-  .x{position:absolute;right:12px;top:10px;background:none;border:0;color:var(--mute);font-size:1.6rem;cursor:pointer;line-height:1;padding:6px}
-  .resumo{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:18px}
-  .resumo div{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;font-size:.95rem}
-  .resumo div+div{border-top:1px solid var(--line)}
-  .resumo .tot{background:#eef3fb;font-weight:700;font-size:1.05rem}
-  #qr{display:grid;place-items:center;margin:0 0 14px}
-  #qr canvas,#qr img,#qr svg{background:#fff;padding:8px;border-radius:8px;width:236px;height:236px}
-  textarea{width:100%;height:84px;resize:none;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg);color:var(--ink);font:12px/1.4 ui-monospace,Menlo,monospace}
-  .msg{margin-top:14px;font-size:.9rem;color:var(--mute);text-align:center}
-  .erro{color:var(--err)}
-  .pulse{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--link);margin-right:8px;animation:p 1.4s infinite}
-  @keyframes p{50%{opacity:.25}}
-  .okicon{width:56px;height:56px;border-radius:50%;background:var(--soft);display:grid;place-items:center;margin:0 auto 14px}
-  .okicon::after{content:"";width:20px;height:11px;border-left:4px solid var(--brand);border-bottom:4px solid var(--brand);transform:rotate(-45deg) translate(2px,-2px)}
-  .busca{width:100%;max-width:420px;padding:12px 16px;border:1px solid var(--line);border-radius:999px;font:inherit;background:var(--card);color:var(--ink);margin-bottom:18px}
-  .tabela{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
-  table{width:100%;border-collapse:collapse}
-  th,td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line)}
-  th{font-family:"Raleway",sans-serif;color:var(--title);background:#eef3fb;font-size:.95rem}
-  td.v{white-space:nowrap;font-weight:600}
-  tr:last-child td{border-bottom:0}
-  .vazio{padding:20px;color:var(--mute)}
-  [hidden]{display:none!important}
+  :root{--bg:#f8f8f8;--card:#fff;--ink:#333;--mute:#575757;--line:#d9d9d9;--title:#071d41;--link:#1351b4;--brand:#168821;--brand-dk:#0f6a19;--brand-ink:#fff;--soft:#ededed;--warn:#fff6e0;--warn-ink:#6b4b00;--err:#a4262c;--hero:#071d41;--hero-ink:#fff}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Open Sans",system-ui,"Segoe UI",Roboto,sans-serif}h1,h2,h3{font-family:"Raleway","Open Sans",system-ui,sans-serif;font-weight:700;line-height:1.2;margin:0}section.blk h2,section.blk h3,.dlg h2{color:var(--title)}p{margin:0 0 14px}a{color:var(--link)}:focus-visible{outline:3px solid var(--link);outline-offset:3px}.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  header.top{background:var(--hero);color:var(--hero-ink)}header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}.logo{font-family:"Raleway",sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:.3px}header.top nav a{color:var(--hero-ink);text-decoration:none;margin-left:22px;font-size:.92rem;opacity:.85}header.top nav a:hover{opacity:1;text-decoration:underline}@media(max-width:640px){header.top nav{display:none}}
+  .hero{background:var(--hero);color:var(--hero-ink);padding:56px 0 72px}.hero .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}@media(max-width:820px){.hero .grid{grid-template-columns:1fr}}.hero h1{font-size:clamp(1.9rem,4.4vw,2.9rem);margin-bottom:16px}.hero p.lead{font-size:1.1rem;opacity:.9;max-width:56ch}.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}.btn{display:inline-block;padding:15px 34px;border:0;border-radius:999px;background:var(--brand);color:var(--brand-ink);font:inherit;font-weight:700;text-decoration:none;cursor:pointer;transition:background .15s}.btn:hover{background:var(--brand-dk)}.btn:disabled{opacity:.6;cursor:wait}.btn.ghost{background:transparent;color:var(--hero-ink);border:1px solid rgba(255,255,255,.35)}.btn.ghost:hover{background:rgba(255,255,255,.08)}.btn.block{display:block;width:100%;text-align:center}.btn.line{background:transparent;color:var(--link);border:2px solid var(--link)}.btn.line:hover{background:#eef3fb}.hero-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:24px}.hero-card h3{font-size:1.05rem;margin-bottom:12px}.hero-card ul{list-style:none;margin:0;padding:0}.hero-card li{padding:9px 0 9px 26px;position:relative;border-top:1px solid rgba(255,255,255,.12);font-size:.95rem}.hero-card li:first-child{border-top:0}.hero-card li::before{content:"";position:absolute;left:2px;top:17px;width:10px;height:6px;border-left:2px solid #5fd06b;border-bottom:2px solid #5fd06b;transform:rotate(-45deg)}
+  section.blk{padding:64px 0}section.blk.alt{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.sec-head{max-width:62ch;margin-bottom:32px}.sec-head h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:10px}.sec-head p{color:var(--mute)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}@media(max-width:820px){.cards{grid-template-columns:1fr}}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}section.alt .card{background:var(--bg)}.card h3{font-size:1.1rem;margin-bottom:8px}.card p{color:var(--mute);margin:0;font-size:.97rem}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:s;list-style:none;margin:0;padding:0}@media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}@media(max-width:560px){.steps{grid-template-columns:1fr}}.steps li{counter-increment:s;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:22px}.steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--link);color:var(--brand-ink);font-weight:700;margin-bottom:12px}.steps h3{font-size:1.05rem;margin-bottom:6px}.steps p{margin:0;color:var(--mute);font-size:.95rem}.why{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:start}@media(max-width:820px){.why{grid-template-columns:1fr}}.why h3{font-size:1.15rem;margin:22px 0 8px}.why h3:first-child{margin-top:0}.notice{background:var(--warn);color:var(--warn-ink);border-radius:12px;padding:20px 22px;font-size:.96rem}.notice strong{display:block;margin-bottom:6px;font-size:1rem}
+  details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:12px}details summary{cursor:pointer;padding:16px 20px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px}details summary::-webkit-details-marker{display:none}details summary::after{content:"+";font-size:1.3rem;line-height:1;color:var(--link)}details[open] summary::after{content:"–"}details .ans{padding:0 20px 18px;color:var(--mute)}.final{background:var(--hero);color:var(--hero-ink);text-align:center;padding:60px 0}.final h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:12px}.final p{max-width:56ch;margin:0 auto 24px;opacity:.9}footer{padding:34px 0;color:var(--mute);font-size:.88rem;text-align:center;border-top:1px solid var(--line)}footer p{max-width:70ch;margin:0 auto 12px}
+  dialog{border:0;border-radius:18px;padding:0;width:min(460px,calc(100% - 24px));max-height:min(92vh,780px);overflow:auto;background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}dialog::backdrop{background:rgba(8,14,17,.62);backdrop-filter:blur(3px)}.dlg{padding:28px}.dlg h2{font-size:1.3rem;margin-bottom:6px}.dlg .sub{color:var(--mute);font-size:.95rem;margin-bottom:18px}.x{position:absolute;right:12px;top:10px;background:none;border:0;color:var(--mute);font-size:1.6rem;cursor:pointer;line-height:1;padding:6px}.resumo{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:18px}.resumo div{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;font-size:.95rem}.resumo div+div{border-top:1px solid var(--line)}.resumo .tot{background:#eef3fb;font-weight:700;font-size:1.05rem}#qr{display:grid;place-items:center;margin:2px 0 14px;min-height:230px}#qr canvas,#qr img,#qr svg{display:block;background:#fff;padding:8px;border-radius:8px;width:236px;height:236px;max-width:100%}textarea{width:100%;height:84px;resize:none;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg);color:var(--ink);font:12px/1.4 ui-monospace,Menlo,monospace;overflow-wrap:anywhere}.msg{margin-top:14px;font-size:.9rem;color:var(--mute);text-align:center}.erro{color:var(--err)}.pulse{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--link);margin-right:8px;animation:p 1.4s infinite}@keyframes p{50%{opacity:.25}}.okicon{width:56px;height:56px;border-radius:50%;background:var(--soft);display:grid;place-items:center;margin:0 auto 14px}.okicon::after{content:"";width:20px;height:11px;border-left:4px solid var(--brand);border-bottom:4px solid var(--brand);transform:rotate(-45deg) translate(2px,-2px)}.busca{width:100%;max-width:420px;padding:12px 16px;border:1px solid var(--line);border-radius:999px;font:inherit;background:var(--card);color:var(--ink);margin-bottom:18px}.tabela{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line)}th{font-family:"Raleway",sans-serif;color:var(--title);background:#eef3fb;font-size:.95rem}td.v{white-space:nowrap;font-weight:600}tr:last-child td{border-bottom:0}.vazio{padding:20px;color:var(--mute)}[hidden]{display:none!important}
 </style>
 </head>
 <body>
-
-<header class="top">
-  <div class="wrap">
-    <div class="logo">79ppl</div>
-    <nav aria-label="Seções">
-      <a href="#incluso">O que está incluso</a>
-      <a href="#como">Como funciona</a>
-      <a href="#taxa">Sobre a taxa</a>
-      <a href="#duvidas">Dúvidas</a>
-    </nav>
-  </div>
-</header>
-
+<header class="top"><div class="wrap"><div class="logo">79ppl</div><nav aria-label="Seções"><a href="#incluso">O que está incluso</a><a href="#como">Como funciona</a><a href="#taxa">Sobre a taxa</a><a href="#duvidas">Dúvidas</a></nav></div></header>
 <main>
-  <section class="blk" id="relatorio" hidden>
-    <div class="wrap">
-      <div class="sec-head">
-        <h2>Seu relatório completo</h2>
-        <p>Pagamento confirmado. Abaixo está a lista completa de fornecedores e valores. Este conteúdo é confidencial e de uso pessoal.</p>
-      </div>
-      <input class="busca" id="busca" type="search" placeholder="Buscar fornecedor" aria-label="Buscar fornecedor">
-      <div class="tabela">
-        <table>
-          <thead><tr><th>Fornecedor</th><th>Valor</th></tr></thead>
-          <tbody id="linhas"></tbody>
-        </table>
-        <div class="vazio" id="vazio" hidden>Nenhum fornecedor encontrado.</div>
-      </div>
-    </div>
-  </section>
-  <section class="hero">
-    <div class="wrap grid">
-      <div>
-        <h1>Emita o seu relatório completo em poucos minutos</h1>
-        <p class="lead">Para liberar o relatório completo, é necessário pagar uma taxa única de emissão. O pagamento é feito por PIX, a confirmação é automática e o acesso é liberado assim que o banco processa a transação.</p>
-        <div class="cta-row">
-          <button class="btn" data-abrir>Pagar taxa de emissão</button>
-          <a class="btn ghost" href="#taxa">Entender a taxa</a>
-        </div>
-      </div>
-      <aside class="hero-card" aria-label="Resumo">
-        <h3>Em resumo</h3>
-        <ul>
-          <li>Taxa única, sem mensalidade</li>
-          <li>Pagamento por PIX, 24 horas por dia</li>
-          <li>Liberação automática após a confirmação</li>
-          <li>Você não precisa criar conta nem enviar comprovante</li>
-        </ul>
-      </aside>
-    </div>
-  </section>
-
-  <section class="blk" id="incluso">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2>O que você recebe ao emitir o relatório completo</h2>
-        <p>A versão completa reúne todas as informações organizadas em um único documento, pronto para consulta.</p>
-      </div>
-      <div class="cards">
-        <div class="card"><h3>Informações completas</h3><p>Todos os dados disponíveis reunidos e organizados, em vez de apenas o resumo da versão básica.</p></div>
-        <div class="card"><h3>Documento organizado</h3><p>Conteúdo estruturado em seções claras, para você encontrar o que precisa sem perder tempo.</p></div>
-        <div class="card"><h3>Acesso imediato</h3><p>Com o pagamento confirmado, o botão de acesso aparece na mesma tela, sem espera e sem aprovação manual.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="blk alt" id="como">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2>Como funciona</h2>
-        <p>O processo leva apenas alguns minutos e acontece inteiro nesta página.</p>
-      </div>
-      <ol class="steps">
-        <li><h3>Clique em pagar a taxa</h3><p>Você verá o resumo da cobrança antes de qualquer pagamento ser gerado.</p></li>
-        <li><h3>Gere o código PIX</h3><p>Um QR Code e um código “copia e cola” são criados na hora, exclusivos para você.</p></li>
-        <li><h3>Pague no app do banco</h3><p>Escaneie o QR Code ou cole o código. A transferência é instantânea.</p></li>
-        <li><h3>Acesse o relatório</h3><p>Ao confirmar o pagamento, a página libera o acesso automaticamente.</p></li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="blk" id="taxa">
-    <div class="wrap why">
-      <div>
-        <div class="sec-head" style="margin-bottom:18px">
-          <h2>Por que existe uma taxa de emissão?</h2>
-        </div>
-        <h3>Custos de processamento</h3>
-        <p>A geração do relatório completo exige reunir, processar e formatar um volume maior de informações do que a versão básica. A taxa ajuda a cobrir esse custo operacional.</p>
-        <h3>Cobrança única e transparente</h3>
-        <p>Não existe assinatura, renovação automática ou cobrança recorrente. Você paga uma vez, pela emissão do documento, e o valor só é exibido na etapa de pagamento, antes de você confirmar.</p>
-        <h3>Pagamento seguro por PIX</h3>
-        <p>O pagamento é processado por um provedor de pagamentos. Não pedimos dados de cartão, senha ou qualquer informação bancária: você paga direto no aplicativo do seu banco.</p>
-        <h3>Manutenção do serviço</h3>
-        <p>Parte da taxa também ajuda a manter o serviço no ar, atualizado e disponível para quem precisa emitir novos relatórios.</p>
-      </div>
-      <div class="notice" role="note">
-        <strong>Antes de pagar, confira:</strong>
-        Use apenas o código PIX gerado nesta página. Não faça pagamentos para chaves ou códigos enviados por terceiros. Depois de pagar, mantenha a página aberta: a confirmação é automática e leva poucos segundos.
-      </div>
-    </div>
-  </section>
-
-  <section class="blk alt" id="seguranca">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2>Pagamento protegido</h2>
-        <p>Cuidamos do processo para que você pague com tranquilidade.</p>
-      </div>
-      <div class="cards">
-        <div class="card"><h3>Sem dados bancários</h3><p>Você não digita número de cartão nem senha. O PIX é confirmado diretamente pelo seu banco.</p></div>
-        <div class="card"><h3>Confirmação verificada</h3><p>O acesso só é liberado depois que o provedor de pagamentos confirma o recebimento, não por declaração do usuário.</p></div>
-        <div class="card"><h3>Código exclusivo</h3><p>Cada cobrança gera um código único, válido para aquela emissão específica.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="blk" id="duvidas">
-    <div class="wrap">
-      <div class="sec-head"><h2>Perguntas frequentes</h2></div>
-      <details><summary>Qual é o valor da taxa?</summary><div class="ans">O valor é exibido de forma clara na etapa de pagamento, antes de o código PIX ser gerado. Você só paga se confirmar.</div></details>
-      <details><summary>A cobrança é mensal ou recorrente?</summary><div class="ans">Não. É uma taxa única, referente à emissão do relatório completo.</div></details>
-      <details><summary>Quanto tempo leva para liberar o relatório?</summary><div class="ans">Normalmente poucos segundos após o pagamento. O PIX é instantâneo e a página verifica a confirmação automaticamente.</div></details>
-      <details><summary>Paguei e o relatório não apareceu. O que fazer?</summary><div class="ans">Mantenha a página aberta por alguns instantes. Se você a fechou, abra novamente neste mesmo aparelho e navegador: a cobrança pendente é retomada. Se o problema continuar, guarde o comprovante do PIX e entre em contato com o suporte.</div></details>
-      <details><summary>Posso pagar de qualquer banco?</summary><div class="ans">Sim. O PIX funciona em qualquer banco ou instituição de pagamento que ofereça a opção.</div></details>
-      <details><summary>O código PIX pode ser usado mais de uma vez?</summary><div class="ans">Não. Cada código é gerado para uma única cobrança. Para uma nova emissão, gere um novo código.</div></details>
-    </div>
-  </section>
-
-  <section class="final">
-    <div class="wrap">
-      <h2>Pronto para emitir o seu relatório?</h2>
-      <p>Pague a taxa de emissão por PIX e tenha acesso ao relatório completo logo em seguida.</p>
-      <button class="btn" data-abrir>Pagar taxa de emissão</button>
-    </div>
-  </section>
+  <section class="blk" id="relatorio" hidden><div class="wrap"><div class="sec-head"><h2>Seu relatório completo</h2><p>Pagamento confirmado. Abaixo está a lista completa de fornecedores e valores. Este conteúdo é confidencial e de uso pessoal.</p></div><input class="busca" id="busca" type="search" placeholder="Buscar fornecedor" aria-label="Buscar fornecedor"><div class="tabela"><table><thead><tr><th>Fornecedor</th><th>Valor</th></tr></thead><tbody id="linhas"></tbody></table><div class="vazio" id="vazio" hidden>Nenhum fornecedor encontrado.</div></div></div></section>
+  <section class="hero"><div class="wrap grid"><div><h1>Emita o seu relatório completo em poucos minutos</h1><p class="lead">Para liberar o relatório completo, é necessário pagar uma taxa única de emissão. O pagamento é feito por PIX, a confirmação é automática e o acesso é liberado assim que o banco processa a transação.</p><div class="cta-row"><button class="btn" data-abrir>Pagar taxa de emissão</button><a class="btn ghost" href="#taxa">Entender a taxa</a></div></div><aside class="hero-card" aria-label="Resumo"><h3>Em resumo</h3><ul><li>Taxa única, sem mensalidade</li><li>Pagamento por PIX, 24 horas por dia</li><li>Liberação automática após a confirmação</li><li>Você não precisa criar conta nem enviar comprovante</li></ul></aside></div></section>
+  <section class="blk" id="incluso"><div class="wrap"><div class="sec-head"><h2>O que você recebe ao emitir o relatório completo</h2><p>A versão completa reúne todas as informações organizadas em um único documento, pronto para consulta.</p></div><div class="cards"><div class="card"><h3>Informações completas</h3><p>Todos os dados disponíveis reunidos e organizados, em vez de apenas o resumo da versão básica.</p></div><div class="card"><h3>Documento organizado</h3><p>Conteúdo estruturado em seções claras, para você encontrar o que precisa sem perder tempo.</p></div><div class="card"><h3>Acesso imediato</h3><p>Com o pagamento confirmado, o botão de acesso aparece na mesma tela, sem espera e sem aprovação manual.</p></div></div></div></section>
+  <section class="blk alt" id="como"><div class="wrap"><div class="sec-head"><h2>Como funciona</h2><p>O processo leva apenas alguns minutos e acontece inteiro nesta página.</p></div><ol class="steps"><li><h3>Clique em pagar a taxa</h3><p>Você verá o resumo da cobrança antes de qualquer pagamento ser gerado.</p></li><li><h3>Gere o código PIX</h3><p>Um QR Code e um código “copia e cola” são criados na hora, exclusivos para você.</p></li><li><h3>Pague no app do banco</h3><p>Escaneie o QR Code ou cole o código. A transferência é instantânea.</p></li><li><h3>Acesse o relatório</h3><p>Ao confirmar o pagamento, a página libera o acesso automaticamente.</p></li></ol></div></section>
+  <section class="blk" id="taxa"><div class="wrap why"><div><div class="sec-head" style="margin-bottom:18px"><h2>Por que existe uma taxa de emissão?</h2></div><h3>Custos de processamento</h3><p>A geração do relatório completo exige reunir, processar e formatar um volume maior de informações do que a versão básica. A taxa ajuda a cobrir esse custo operacional.</p><h3>Cobrança única e transparente</h3><p>Não existe assinatura, renovação automática ou cobrança recorrente. Você paga uma vez, pela emissão do documento, e o valor só é exibido na etapa de pagamento, antes de você confirmar.</p><h3>Pagamento seguro por PIX</h3><p>O pagamento é processado por um provedor de pagamentos. Não pedimos dados de cartão, senha ou qualquer informação bancária: você paga direto no aplicativo do seu banco.</p><h3>Manutenção do serviço</h3><p>Parte da taxa também ajuda a manter o serviço no ar, atualizado e disponível para quem precisa emitir novos relatórios.</p></div><div class="notice" role="note"><strong>Antes de pagar, confira:</strong>Use apenas o código PIX gerado nesta página. Não faça pagamentos para chaves ou códigos enviados por terceiros. Depois de pagar, mantenha a página aberta: a confirmação é automática.</div></div></section>
+  <section class="blk alt" id="seguranca"><div class="wrap"><div class="sec-head"><h2>Pagamento protegido</h2><p>Cuidamos do processo para que você pague com tranquilidade.</p></div><div class="cards"><div class="card"><h3>Sem dados bancários</h3><p>Você não digita número de cartão nem senha. O PIX é confirmado diretamente pelo seu banco.</p></div><div class="card"><h3>Confirmação verificada</h3><p>O acesso só é liberado depois que o provedor de pagamentos confirma o recebimento, não por declaração do usuário.</p></div><div class="card"><h3>Código exclusivo</h3><p>Cada cobrança gera um código único, válido para aquela emissão específica.</p></div></div></div></section>
+  <section class="blk" id="duvidas"><div class="wrap"><div class="sec-head"><h2>Perguntas frequentes</h2></div><details><summary>Qual é o valor da taxa?</summary><div class="ans">O valor é exibido de forma clara na etapa de pagamento, antes de o código PIX ser gerado. Você só paga se confirmar.</div></details><details><summary>A cobrança é mensal ou recorrente?</summary><div class="ans">Não. É uma taxa única, referente à emissão do relatório completo.</div></details><details><summary>Quanto tempo leva para liberar o relatório?</summary><div class="ans">Normalmente poucos segundos após o pagamento. O PIX é confirmado automaticamente.</div></details><details><summary>Paguei e o relatório não apareceu. O que fazer?</summary><div class="ans">Mantenha a página aberta por alguns instantes. Se o problema continuar, guarde o comprovante do PIX e entre em contato com o suporte.</div></details><details><summary>Posso pagar de qualquer banco?</summary><div class="ans">Sim. O PIX funciona em qualquer banco ou instituição de pagamento que ofereça a opção.</div></details><details><summary>O código PIX pode ser usado mais de uma vez?</summary><div class="ans">Não. Cada código é gerado para uma única cobrança.</div></details></div></section>
+  <section class="final"><div class="wrap"><h2>Pronto para emitir o seu relatório?</h2><p>Pague a taxa de emissão por PIX e tenha acesso ao relatório completo logo em seguida.</p><button class="btn" data-abrir>Pagar taxa de emissão</button></div></section>
 </main>
-
-<footer>
-  <div class="wrap">
-    <p><strong>79ppl</strong><br>Razão social: [PREENCHER] &middot; CNPJ: [PREENCHER]<br>Suporte: [PREENCHER E-MAIL OU WHATSAPP]</p>
-    <p>A 79ppl é uma empresa privada e não possui vínculo com órgãos ou serviços do governo. Pagamentos processados via PIX por provedor de pagamentos parceiro.</p>
-  </div>
-</footer>
-
-<dialog id="dlg" aria-labelledby="dlgTitulo">
-  <button class="x" id="fechar" aria-label="Fechar">&times;</button>
-
-  <div class="dlg" id="p1">
-    <h2 id="dlgTitulo">Resumo da cobrança</h2>
-    <p class="sub">Confira os dados antes de gerar o código PIX.</p>
-    <div class="resumo">
-      <div><span>Serviço</span><span>Emissão de relatório completo</span></div>
-      <div><span>Forma de pagamento</span><span>PIX</span></div>
-      <div class="tot"><span>Taxa de emissão</span><span>R$ 15,00</span></div>
-    </div>
-    <button class="btn block" id="gerar">Gerar código PIX</button>
-    <div class="msg erro" id="erro" hidden></div>
-  </div>
-
-  <div class="dlg" id="p2" hidden>
-    <h2>Pague com PIX</h2>
-    <p class="sub">Escaneie o QR Code ou copie o código e cole no app do seu banco.</p>
-    <div id="qr"></div>
-    <textarea id="codigo" readonly aria-label="Código PIX copia e cola"></textarea>
-    <button class="btn block line" id="copiar" style="margin-top:10px">Copiar código PIX</button>
-    <div class="msg"><span class="pulse"></span>Aguardando pagamento. Esta janela atualiza sozinha.</div>
-  </div>
-
-  <div class="dlg" id="p3" hidden style="text-align:center">
-    <div class="okicon" aria-hidden="true"></div>
-    <h2>Pagamento confirmado</h2>
-    <p class="sub">Seu relatório completo está liberado.</p>
-    <button class="btn block" id="ver">Ver relatório</button>
-  </div>
-</dialog>
-
-<script src="/qrcode.js"></script>
-<script>
+<footer><div class="wrap"><p><strong>79ppl</strong><br>Razão social: [PREENCHER] &middot; CNPJ: [PREENCHER]<br>Suporte: [PREENCHER E-MAIL OU WHATSAPP]</p><p>A 79ppl é uma empresa privada e não possui vínculo com órgãos ou serviços do governo. Pagamentos processados via PIX por provedor de pagamentos parceiro.</p></div></footer>
+<dialog id="dlg" aria-labelledby="dlgTitulo"><button class="x" id="fechar" aria-label="Fechar">&times;</button><div class="dlg" id="p1"><h2 id="dlgTitulo">Resumo da cobrança</h2><p class="sub">Confira os dados antes de gerar o código PIX.</p><div class="resumo"><div><span>Serviço</span><span>Emissão de relatório completo</span></div><div><span>Forma de pagamento</span><span>PIX</span></div><div class="tot"><span>Taxa de emissão</span><span>R$ 15,00</span></div></div><button class="btn block" id="gerar">Gerar código PIX</button><div class="msg erro" id="erro" role="alert" hidden></div></div><div class="dlg" id="p2" hidden><h2>Pague com PIX</h2><p class="sub">Escaneie o QR Code ou copie o código e cole no app do seu banco.</p><div id="qr" aria-label="QR Code Pix"></div><textarea id="codigo" readonly aria-label="Código PIX copia e cola"></textarea><button class="btn block line" id="copiar" style="margin-top:10px">Copiar código PIX</button><div class="msg" aria-live="polite"><span class="pulse"></span>Aguardando pagamento. Esta janela atualiza sozinha.</div></div><div class="dlg" id="p3" hidden style="text-align:center"><div class="okicon" aria-hidden="true"></div><h2>Pagamento confirmado</h2><p class="sub">Seu relatório completo está liberado.</p><button class="btn block" id="ver">Ver relatório</button></div></dialog>
+<script src="/qrcode.js"></script><script>
 const $ = (id) => document.getElementById(id);
-const CHAVE = "pix_tx_id";
-const PAGO = "pix_paid_id";
-let FORNECEDORES = [];
+const CHAVE = "pix_tx_id", PAGO = "pix_paid_id";
+let FORNECEDORES = [], timer = null, verificando = false;
 const dlg = $("dlg");
-let timer = null;
-
-function passo(n){ for (const i of [1,2,3]) $("p"+i).hidden = i !== n; }
-
-function desenharQR(texto){
-  const el = $("qr"); el.innerHTML = "";
-  try {
-    const qr = qrcode(0, "M");      // 0 = tamanho automático (aceita códigos PIX longos)
-    qr.addData(texto, "Byte");
-    qr.make();
-    el.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
-  } catch (e) {
-    console.error("Falha ao desenhar QR:", e);
-    el.textContent = "Não foi possível exibir o QR Code. Use o código abaixo (copia e cola).";
-  }
-}
-
-async function checar(id){
-  try {
-    const r = await fetch("/api/status?id=" + encodeURIComponent(id));
-    const d = await r.json();
-    if (d.paid) {
-      clearInterval(timer);
-      localStorage.removeItem(CHAVE);
-      localStorage.setItem(PAGO, id);
-      const ok = await carregarLista(id);
-      if (ok) { passo(3); if (!dlg.open) dlg.showModal(); }
-    }
-  } catch {}
-}
-
-function acompanhar(id){
-  clearInterval(timer);
-  checar(id);
-  timer = setInterval(() => checar(id), 4000);
-}
-
-function brl(v){
-  return typeof v === "number" ? v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) : String(v ?? "");
-}
-function desenhar(filtro=""){
-  const tb = $("linhas"); tb.innerHTML = "";
-  const q = filtro.trim().toLowerCase();
-  const itens = FORNECEDORES.filter(f => String(f.nome).toLowerCase().includes(q));
-  for (const f of itens) {
-    const tr = document.createElement("tr");
-    const a = document.createElement("td"); a.textContent = f.nome;
-    const b = document.createElement("td"); b.className = "v"; b.textContent = brl(f.valor);
-    tr.append(a, b); tb.append(tr);
-  }
-  $("vazio").hidden = itens.length > 0;
-}
-async function carregarLista(id){
-  try {
-    const r = await fetch("/api/report?id=" + encodeURIComponent(id));
-    if (!r.ok) { if (r.status === 402) localStorage.removeItem(PAGO); return false; }
-    FORNECEDORES = (await r.json()).fornecedores || [];
-    desenhar();
-    $("relatorio").hidden = false;
-    return true;
-  } catch { return false; }
-}
-$("busca").addEventListener("input", (e) => desenhar(e.target.value));
-$("ver").onclick = () => { dlg.close(); $("relatorio").scrollIntoView({behavior:"smooth"}); };
-
-function abrir(){
-  let salvo = null;
-  try { salvo = JSON.parse(localStorage.getItem(CHAVE) || "null"); } catch {}
-  // descarta cobrança sem código ou com mais de 50 min (o PIX expira em 1h)
-  if (salvo && (!salvo.code || Date.now() - (salvo.ts || 0) > 50 * 60 * 1000)) {
-    localStorage.removeItem(CHAVE); salvo = null;
-  }
-  if (salvo?.id) {
-    $("codigo").value = salvo.code; desenharQR(salvo.code); passo(2); acompanhar(salvo.id);
-  } else { passo(1); $("erro").hidden = true; }
-  if (!dlg.open) dlg.showModal();
-}
-
-document.querySelectorAll("[data-abrir]").forEach(b => b.onclick = abrir);
-$("fechar").onclick = () => dlg.close();
-dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
-
-// a BravoPay leva de 5 a 30s para gerar o código: consultamos até ficar pronto (máx. ~80s)
-async function aguardarPix(id){
-  for (let i = 0; i < 40; i++) {
-    const r = await fetch("/api/pix?id=" + encodeURIComponent(id));
-    if (r.ok) {
-      const d = await r.json();
-      if (d.copy_paste) return d.copy_paste;
-      if (d.expired) throw new Error("expirou");
-    }
-    await new Promise((res) => setTimeout(res, 2000));
-  }
-  throw new Error("demorou");
-}
-
-$("gerar").onclick = async () => {
-  const btn = $("gerar"), rotulo = btn.textContent;
-  btn.disabled = true; $("erro").hidden = true;
-  btn.textContent = "Gerando seu PIX… (pode levar até 30s)";
-  try {
-    const r = await fetch("/api/create", { method: "POST" });
-    const d = await r.json();
-    if (!r.ok) { console.error("Erro ao gerar PIX:", r.status, d); throw new Error("http " + r.status); }
-    const code = d.copy_paste || await aguardarPix(d.id);
-    localStorage.setItem(CHAVE, JSON.stringify({ id: d.id, code, ts: Date.now() }));
-    $("codigo").value = code;
-    desenharQR(code);
-    passo(2);
-    acompanhar(d.id);
-  } catch (e) {
-    $("erro").textContent = "Não foi possível gerar o PIX agora. Tente novamente em instantes." + (e && e.message ? " (" + e.message + ")" : "");
-    $("erro").hidden = false;
-  } finally { btn.disabled = false; btn.textContent = rotulo; }
-};
-
-$("copiar").onclick = async () => {
-  try { await navigator.clipboard.writeText($("codigo").value); }
-  catch { $("codigo").select(); document.execCommand("copy"); }
-  $("copiar").textContent = "Código copiado";
-  setTimeout(() => $("copiar").textContent = "Copiar código PIX", 2000);
-};
-
-// quem já pagou continua com acesso ao recarregar; senão retoma cobrança pendente
-try {
-  const pago = localStorage.getItem(PAGO);
-  if (pago) carregarLista(pago);
-  const salvo = JSON.parse(localStorage.getItem(CHAVE) || "null");
-  if (salvo?.id) acompanhar(salvo.id);
-} catch {}
+function passo(n){for(const i of [1,2,3])$("p"+i).hidden=i!==n;}
+function desenharQR(texto){const el=$("qr");el.innerHTML="";try{if(typeof qrcode!=="function")throw new Error("Biblioteca QR indisponível");const qr=qrcode(0,"M");qr.addData(texto,"Byte");qr.make();el.innerHTML=qr.createSvgTag({cellSize:5,margin:2,scalable:true});}catch(e){console.error("Falha ao gerar QR:",e);el.textContent="Não foi possível desenhar o QR Code. Use o código Pix abaixo.";}}
+async function checar(id){if(verificando)return;verificando=true;try{const r=await fetch("/api/status?id="+encodeURIComponent(id),{cache:"no-store"});if(!r.ok)return;const d=await r.json();if(d.paid){clearInterval(timer);timer=null;localStorage.removeItem(CHAVE);localStorage.setItem(PAGO,id);if(await carregarLista(id)){passo(3);if(!dlg.open)dlg.showModal();}}}catch{}finally{verificando=false;}}
+function acompanhar(id){clearInterval(timer);checar(id);timer=setInterval(()=>checar(id),5000);}
+function brl(v){return typeof v==="number"?v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}):String(v??"");}
+function desenhar(filtro=""){const tb=$("linhas");tb.innerHTML="";const q=filtro.trim().toLowerCase();const itens=FORNECEDORES.filter(f=>String(f.nome).toLowerCase().includes(q));for(const f of itens){const tr=document.createElement("tr"),a=document.createElement("td"),b=document.createElement("td");a.textContent=f.nome;b.className="v";b.textContent=brl(f.valor);tr.append(a,b);tb.append(tr);}$("vazio").hidden=itens.length>0;}
+async function carregarLista(id){try{const r=await fetch("/api/report?id="+encodeURIComponent(id),{cache:"no-store"});if(!r.ok){if(r.status===402)localStorage.removeItem(PAGO);return false;}FORNECEDORES=(await r.json()).fornecedores||[];desenhar();$("relatorio").hidden=false;return true;}catch{return false;}}
+$("busca").addEventListener("input",e=>desenhar(e.target.value));$("ver").onclick=()=>{dlg.close();$("relatorio").scrollIntoView({behavior:"smooth"});};
+function abrir(){let salvo=null;try{salvo=JSON.parse(localStorage.getItem(CHAVE)||"null");}catch{}if(salvo&&(!salvo.code||Date.now()-(salvo.ts||0)>50*60*1000)){localStorage.removeItem(CHAVE);salvo=null;}if(salvo?.id){$("codigo").value=salvo.code;desenharQR(salvo.code);passo(2);acompanhar(salvo.id);}else{passo(1);$("erro").hidden=true;}if(!dlg.open)dlg.showModal();}
+document.querySelectorAll("[data-abrir]").forEach(b=>b.onclick=abrir);$("fechar").onclick=()=>dlg.close();dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close();});
+async function aguardarPix(id){const inicio=Date.now(),limite=45000;let espera=800,erroConsecutivo=0;while(Date.now()-inicio<limite){try{const r=await fetch("/api/pix?id="+encodeURIComponent(id),{cache:"no-store"});if(r.ok){const d=await r.json();erroConsecutivo=0;if(d.copy_paste)return d.copy_paste;if(d.expired)throw new Error("O código Pix expirou. Gere uma nova cobrança.");}else if(r.status>=500){erroConsecutivo++;if(erroConsecutivo>=3)throw new Error("A consulta à BravoPay está instável. Tente novamente em instantes.");}}catch(e){if(e.message&&(/expirou|instável/.test(e.message)))throw e;}await new Promise(res=>setTimeout(res,espera));espera=Math.min(Math.round(espera*1.45),3000);}throw new Error("A BravoPay ainda não liberou o código Pix. Aguarde um pouco e tente novamente.");}
+$("gerar").onclick=async()=>{const btn=$("gerar"),rotulo=btn.textContent;btn.disabled=true;$("erro").hidden=true;btn.textContent="Preparando seu pagamento…";try{const r=await fetch("/api/create",{method:"POST",headers:{"Accept":"application/json"}});let d={};try{d=await r.json();}catch{}if(!r.ok)throw new Error(d.error||"Não foi possível iniciar o pagamento ("+r.status+").");if(!d.id)throw new Error("A BravoPay não retornou o identificador da cobrança.");const code=d.copy_paste||await aguardarPix(d.id);if(!/^000201/.test(code))throw new Error("A BravoPay retornou um código Pix inválido. Tente novamente.");localStorage.setItem(CHAVE,JSON.stringify({id:d.id,code,ts:Date.now()}));$("codigo").value=code;desenharQR(code);passo(2);acompanhar(d.id);}catch(e){console.error("Erro ao gerar Pix:",e);$("erro").textContent=e.message||"Não foi possível gerar o Pix agora. Tente novamente.";$("erro").hidden=false;}finally{btn.disabled=false;btn.textContent=rotulo;}};
+$("copiar").onclick=async()=>{const btn=$("copiar");try{await navigator.clipboard.writeText($("codigo").value);}catch{$("codigo").focus();$("codigo").select();document.execCommand("copy");}btn.textContent="Código copiado";setTimeout(()=>btn.textContent="Copiar código PIX",2000);};
+try{const pago=localStorage.getItem(PAGO);if(pago)carregarLista(pago);const salvo=JSON.parse(localStorage.getItem(CHAVE)||"null");if(salvo?.id)acompanhar(salvo.id);}catch{}
 </script>
 </body>
 </html>
