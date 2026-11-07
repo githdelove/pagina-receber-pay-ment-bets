@@ -3,8 +3,15 @@
 // Valor da cobrança em centavos: 1500 = R$ 15,00.
 export const VALOR_CENTAVOS = 1500;
 
-// Configure BRAVOPAY_KEY como Secret no Cloudflare. Nunca publique a chave no código.
-export const getChave = (env) => (env && typeof env.BRAVOPAY_KEY === "string" ? env.BRAVOPAY_KEY.trim() : "");
+// Configure a chave como Secret do Worker. Aliases permitem projetos que já usavam
+// os nomes BRAVOPAY_API_KEY ou BRAVOPAY_TOKEN. Nunca colocar o segredo no repositório.
+export const getChave = (env) => {
+  for (const nome of ["BRAVOPAY_KEY", "BRAVOPAY_API_KEY", "BRAVOPAY_TOKEN"]) {
+    const valor = env && env[nome];
+    if (typeof valor === "string" && valor.trim()) return valor.trim();
+  }
+  return "";
+};
 
 const BASE = "https://bravopay.club/api/v1";
 const STATUS_PAGO = ["paid", "approved", "completed", "confirmed", "succeeded", "pago"];
@@ -51,7 +58,6 @@ export const criarTransacao = (env) =>
 export const buscarTransacao = (env, id) =>
   bravo(env, `/transactions/${encodeURIComponent(id)}`);
 
-// Decide se a transação está paga (a fonte da verdade é sempre o GET na BravoPay).
 export function estaPago(tx) {
   if (!tx) return false;
   const t = tx.data && typeof tx.data === "object" ? tx.data : tx;
@@ -66,32 +72,19 @@ export function idValido(id) {
   return typeof id === "string" && /^[A-Za-z0-9_\-]{6,100}$/.test(id);
 }
 
-// Localiza o payload Pix EMV em diferentes formatos de resposta do provedor.
 export function extrairPix(body) {
   const vistos = new Set();
   const camposPix = /^(pix|pix_code|pixcode|copy.?paste|br.?code|emv|payload|qr.?code|qr.?string|qr.?data|encoded.?image)$/i;
-  const achar = (v, prof = 0, chave = "") => {
+  const achar = (v, prof = 0) => {
     if (prof > 10 || v == null) return null;
     if (typeof v === "string") {
       const t = v.trim();
-      // O payload copia e cola começa pelo identificador EMV 000201.
       return /^000201/.test(t) && t.length > 30 ? t : null;
     }
     if (typeof v !== "object" || vistos.has(v)) return null;
     vistos.add(v);
-    // Primeiro prioriza propriedades conhecidas para não confundir URLs/imagens com o payload.
-    for (const [k, valor] of Object.entries(v)) {
-      if (camposPix.test(k)) {
-        const r = achar(valor, prof + 1, k);
-        if (r) return r;
-      }
-    }
-    for (const [k, valor] of Object.entries(v)) {
-      if (!camposPix.test(k)) {
-        const r = achar(valor, prof + 1, k);
-        if (r) return r;
-      }
-    }
+    for (const [k, valor] of Object.entries(v)) if (camposPix.test(k)) { const r = achar(valor, prof + 1); if (r) return r; }
+    for (const [k, valor] of Object.entries(v)) if (!camposPix.test(k)) { const r = achar(valor, prof + 1); if (r) return r; }
     return null;
   };
   return achar(body);

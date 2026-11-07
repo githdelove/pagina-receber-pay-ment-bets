@@ -5,6 +5,7 @@ import * as status from "./functions/api/status.js";
 import * as pix from "./functions/api/pix.js";
 import * as report from "./functions/api/report.js";
 import * as webhook from "./functions/api/webhook.js";
+import * as health from "./functions/api/health.js";
 
 const ROTAS = {
   "/api/create":  { POST: create.onRequestPost },
@@ -12,6 +13,7 @@ const ROTAS = {
   "/api/pix":     { GET: pix.onRequestGet },
   "/api/report":  { GET: report.onRequestGet },
   "/api/webhook": { POST: webhook.onRequestPost },
+  "/api/health":  { GET: health.onRequestGet },
 };
 
 export default {
